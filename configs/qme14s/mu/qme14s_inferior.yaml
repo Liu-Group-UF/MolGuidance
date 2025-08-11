@@ -1,0 +1,124 @@
+checkpointing:
+  every_n_train_steps: 20000
+  save_last: true
+  save_top_k: -1
+  filename: 'model-step={step}'
+dataset:
+  atom_map:
+  - C
+  - H
+  - N
+  - O
+  - F
+  - B
+  - P
+  - S
+  - Cl
+  - Br
+  - Se
+  - As
+  - Al
+  - Si
+  dataset_name: qme14s
+  dataset_size: null
+  processed_data_dir: data/qme14s/
+  raw_data_dir: data/qme14s_raw/
+  conditioning:
+    enabled: true
+    property: mu
+    normalize: true
+  use_first_half_training_set: true
+model_setting:
+  property_embedding_dim: 256
+  properties_handle_method: concatenate_sum
+  gaussian_expansion:
+    enabled: false
+    n_gaussians: 5
+interpolant_scheduler:
+  cosine_params:
+    a: 2
+    c: 2
+    e: 1.5
+    x: 1
+  schedule_type:
+    a: linear
+    c: linear
+    e: linear
+    x: linear
+lr_scheduler:
+  base_lr: 0.00025
+  restart_interval: 0
+  restart_type: linear
+  warmup_length: 0.0
+  weight_decay: 1.0e-12
+mol_fm:
+  parameterization: ctmc
+  prior_config:
+    a:
+      align: false
+      kwargs: {}
+      type: ctmc
+    c:
+      align: false
+      kwargs: {}
+      type: ctmc
+    e:
+      align: false
+      kwargs: {}
+      type: ctmc
+    x:
+      align: true
+      kwargs:
+        std: 1.0
+      type: centered-normal
+  time_scaled_loss: true
+  total_loss_weights:
+    a: 0.4
+    c: 1.0
+    e: 2.0
+    x: 3.0
+resume:
+  run_id: jcbq0qz5
+training:
+  batch_size: 128
+  evaluation:
+    mols_to_sample: 128
+    sample_interval: 0.2
+    val_loss_interval: 0.2
+  max_num_edges: 400000.0
+  num_workers: 4
+  output_dir: runs_ctmc/
+  trainer_args:
+    accelerator: gpu
+    accumulate_grad_batches: 1
+    devices: 1
+    gradient_clip_algorithm: value
+    gradient_clip_val: 1.0
+    limit_val_batches: 0.1
+    max_epochs: 300
+    num_nodes: 1
+    strategy: auto
+vector_field:
+  convs_per_update: 1
+  high_confidence_threshold: 0.0
+  message_norm: 100
+  n_cp_feats: 4
+  n_hidden_edge_feats: 32
+  n_hidden_scalars: 64
+  n_message_gvps: 2
+  n_molecule_updates: 4
+  n_recycles: 1
+  n_update_gvps: 2
+  n_vec_channels: 8
+  rbf_dim: 32
+  rbf_dmax: 14
+  separate_mol_updaters: true
+  stochasticity: 10.0
+  update_edge_w_distance: true
+wandb:
+  entity: jerryjin0707
+  id: qme14s
+  mode: online
+  name: qme14s-ctmc-without_gaussian-mu-concatenate_sum
+  project: mol-fm
+  save_dir: runs_qme14s_valid

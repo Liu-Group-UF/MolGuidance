@@ -1,0 +1,189 @@
+import torch
+from pathlib import Path
+import dgl
+from torch.nn.functional import one_hot
+from molguidance.data_processing.priors import coupled_node_prior, edge_prior
+from molguidance.models.ctmc_vector_field import PROPERTY_MAP
+
+
+def collate(graphs):
+    batched_graph = dgl.batch(graphs)
+    if hasattr(graphs[0], 'prop'):
+        # Stack properties and move to same device as graph
+        props = torch.stack([g.prop for g in graphs])
+        batched_graph.prop = props.to(batched_graph.device)
+    return batched_graph
+
+class MoleculeDataset(torch.utils.data.Dataset):
+
+    def __init__(self, split: str, dataset_config: dict, prior_config: dict):
+        super(MoleculeDataset, self).__init__()
+
+        # unpack some configs regarding the prior
+        self.prior_config = prior_config
+        self.dataset_config = dataset_config
+
+        # get the condtional configuration
+        self.conditioning = dataset_config.get('conditioning', {})
+        self.conditioning_enabled = self.conditioning.get('enabled', False)
+        self.target_property = self.conditioning.get('property', None)
+        self.normalize_property = self.conditioning.get('normalize', True)  
+    
+        # get the processed data directory
+        processed_data_dir: Path = Path(dataset_config['processed_data_dir'])
+
+        # if the processed data directory does not exist, check it relative to the root of flowmol repository
+        if not processed_data_dir.exists():
+            processed_data_dir = Path(__file__).parent.parent.parent / processed_data_dir
+            if processed_data_dir.exists():
+                dataset_config['processed_data_dir'] = str(processed_data_dir)
+            else:
+                raise FileNotFoundError(f"processed data directory {dataset_config['processed_data_dir']} not found.")
+            
+        self.processed_data_dir = processed_data_dir
+
+        # load the marginal distributions of atom types and the conditional distribution of charges given atom type
+        marginal_dists_file = processed_data_dir / 'train_data_marginal_dists.pt'
+        p_a, p_c, p_e, p_c_given_a = torch.load(marginal_dists_file)
+
+        # add the marginal distributions as arguments to the prior sampling functions
+        if self.prior_config['a']['type'] == 'marginal':
+            self.prior_config['a']['kwargs']['p'] = p_a
+
+        if self.prior_config['e']['type'] == 'marginal':
+            self.prior_config['e']['kwargs']['p'] = p_e
+
+        if self.prior_config['c']['type'] == 'marginal':
+            self.prior_config['c']['kwargs']['p'] = p_c
+        
+        if self.prior_config['c']['type'] == 'c-given-a':
+            self.prior_config['c']['kwargs']['p_c_given_a'] = p_c_given_a
+
+        if dataset_config['dataset_name'] in ['geom', 'qm9', 'qme14s']:
+            data_file = processed_data_dir / f'{split}_data_processed.pt'
+        else:
+            raise NotImplementedError('unsupported dataset_name')
+
+        # load data from processed data directory
+        data_dict = torch.load(data_file)
+
+        self.positions = data_dict['positions']
+        self.atom_types = data_dict['atom_types']
+        self.atom_charges = data_dict['atom_charges']
+        self.bond_types = data_dict['bond_types']
+        self.bond_idxs = data_dict['bond_idxs']
+        self.node_idx_array = data_dict['node_idx_array']
+        self.edge_idx_array = data_dict['edge_idx_array']
+        self.dataset = dataset_config['dataset_name']
+
+        # Load and set up conditioning if enabled
+        if self.conditioning_enabled and self.target_property:
+            if 'properties' not in data_dict:
+                raise ValueError("Properties not found in processed data")
+
+            if self.dataset == "qm9":
+                if self.target_property not in PROPERTY_MAP:
+                    raise ValueError(f"Target property {self.target_property} not found in property map")
+                self.property_idx = PROPERTY_MAP[self.target_property]
+
+            self.properties = data_dict['properties']
+            
+            # Load normalization parameters if normalize is True
+            if self.normalize_property:
+                norm_params_file = processed_data_dir / 'train_data_property_normalization.pt'
+                self.norm_params = torch.load(norm_params_file)
+                
+
+    def __len__(self):
+        return self.node_idx_array.shape[0]
+    
+    def __getitem__(self, idx):
+        node_start_idx = self.node_idx_array[idx, 0]
+        node_end_idx = self.node_idx_array[idx, 1]
+        edge_start_idx = self.edge_idx_array[idx, 0]
+        edge_end_idx = self.edge_idx_array[idx, 1]
+        
+        # get data pertaining to nodes for this molecule
+        positions = self.positions[node_start_idx:node_end_idx]
+        atom_types = self.atom_types[node_start_idx:node_end_idx].float()
+        atom_charges = self.atom_charges[node_start_idx:node_end_idx].long()
+
+        # remove COM from positions
+        positions = positions - positions.mean(dim=0, keepdim=True)
+
+        # get data pertaining to edges for this molecule
+        bond_types = self.bond_types[edge_start_idx:edge_end_idx].int()
+        bond_idxs = self.bond_idxs[edge_start_idx:edge_end_idx].long()
+
+        # reconstruct adjacency matrix
+        n_atoms = positions.shape[0]
+        adj = torch.zeros((n_atoms, n_atoms), dtype=torch.int32)
+
+        # fill in the values of the adjacency matrix specified by bond_idxs
+        adj[bond_idxs[:,0], bond_idxs[:,1]] = bond_types
+
+        # get upper triangle of adjacency matrix
+        upper_edge_idxs = torch.triu_indices(n_atoms, n_atoms, offset=1) # has shape (2, n_upper_edges)
+        upper_edge_labels = adj[upper_edge_idxs[0], upper_edge_idxs[1]]
+
+        # get lower triangle edges by swapping source and destination of upper_edge_idxs
+        lower_edge_idxs = torch.stack((upper_edge_idxs[1], upper_edge_idxs[0]))
+
+        edges = torch.cat((upper_edge_idxs, lower_edge_idxs), dim=1)
+        edge_labels = torch.cat((upper_edge_labels, upper_edge_labels))
+
+        # one-hot encode edge labels and atom charges
+        edge_labels = one_hot(edge_labels.to(torch.int64), num_classes=5).float() # hard-coded assumption of 5 bond types
+        try:
+            atom_charges = one_hot(atom_charges + 2, num_classes=6).float() # hard-coded assumption that charges are in range [-2, 3]
+        except Exception as e:
+            print('an atom charge outside of the expected range was encountered')
+            print(f'max atom charge: {atom_charges.max()}, min atom charge: {atom_charges.min()}')
+            raise e
+
+        # create a dgl graph
+        g = dgl.graph((edges[0], edges[1]), num_nodes=n_atoms)
+
+        # add edge features
+        g.edata['e_1_true'] = edge_labels
+
+        # add node features
+        g.ndata['x_1_true'] = positions
+        g.ndata['a_1_true'] = atom_types
+        g.ndata['c_1_true'] = atom_charges
+
+        # Add conditioning property if enabled
+        if self.conditioning_enabled and self.target_property:
+            if self.dataset == "qm9":
+                property_value = self.properties[idx, self.property_idx].float()
+            elif self.dataset == "qme14s":
+                property_value = self.properties[idx].float()
+
+            if self.normalize_property:
+                if self.dataset == "qm9":
+                    mean = self.norm_params['mean'][self.property_idx]
+                    std = self.norm_params['std'][self.property_idx]
+                elif self.dataset == "qme14s":
+                    mean = self.norm_params['mean']
+                    std = self.norm_params['std']
+                property_value = (property_value - mean) / std
+            g.prop = property_value.to(g.device)
+
+
+        # sample prior for node features, coupled to the destination features
+        dst_dict = {
+            'x': positions,
+            'a': atom_types,
+            'c': atom_charges
+        }
+        prior_node_feats = coupled_node_prior(dst_dict=dst_dict, prior_config=self.prior_config)
+        for feat in prior_node_feats:
+            g.ndata[f'{feat}_0'] = prior_node_feats[feat]
+
+        # sample the prior for the edge features    
+        upper_edge_mask = torch.zeros(g.num_edges(), dtype=torch.bool)
+        n_upper_edges = upper_edge_idxs.shape[1]
+        upper_edge_mask[:n_upper_edges] = True
+        g.edata['e_0'] = edge_prior(upper_edge_mask, self.prior_config['e'])
+
+        return g

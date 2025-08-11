@@ -1,0 +1,50 @@
+dataset:
+  dataset_name: qme14s
+  processed_data_dir: data/qme14s 
+  conditioning:
+    enabled: true
+    property: mu
+    normalize: true
+  use_first_half_training_set: false
+model:
+  scalar_size: 256
+  vector_size: 16
+  n_tasks: 1
+  num_layers: 3
+  dropout: 0.0
+  pooling_type: mean
+  n_atom_types: 14 # Number of atom types in qme14s dataset
+training:
+  output_dir: molguidance/property_regressor/model_output_qme14s
+  batch_size: 128
+  num_workers: 4
+  learning_rate: 1.0e-3
+  weight_decay: 1.0e-4
+  scheduler_patience: 10
+  scheduler_factor: 0.5  
+  trainer_args:
+    accelerator: gpu
+    accumulate_grad_batches: 1
+    devices: 1
+    max_epochs: 1000 
+    num_nodes: 1
+mol_fm:
+  parameterization: ctmc
+  prior_config:
+    a:
+      align: false
+      kwargs: {}
+      type: ctmc
+    c:
+      align: false
+      kwargs: {}
+      type: ctmc
+    e:
+      align: false
+      kwargs: {}
+      type: ctmc
+    x:
+      align: true
+      kwargs:
+        std: 1.0
+      type: centered-normal

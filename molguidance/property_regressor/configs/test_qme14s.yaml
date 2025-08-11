@@ -1,0 +1,38 @@
+dataset:
+  atom_map:
+  - C
+  - H
+  - N
+  - O
+  - F
+  - B
+  - P
+  - S
+  - Cl
+  - Br
+  - Se
+  - As
+  - Al
+  - Si
+  processed_data_dir: data/qme14s
+  dataset_name: qme14s
+mol_fm:
+  parameterization: ctmc
+  prior_config:
+    a:
+      align: false
+      kwargs: {}
+      type: ctmc
+    c:
+      align: false
+      kwargs: {}
+      type: ctmc
+    e:
+      align: false
+      kwargs: {}
+      type: ctmc
+    x:
+      align: true
+      kwargs:
+        std: 1.0
+      type: centered-normal
