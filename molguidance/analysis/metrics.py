@@ -5,7 +5,6 @@ import torch
 from rdkit import Chem
 from collections import Counter
 import wandb
-from molguidance.utils.divergences import DivergenceCalculator
 from molguidance.analysis.ff_energy import compute_mmff_energy
 from molguidance.analysis.reos import REOS
 from molguidance.analysis.ring_systems import RingSystemCounter, ring_counts_to_df
@@ -32,9 +31,6 @@ class SampleAnalyzer():
 
         if self.processed_data_dir is None:
             self.processed_data_dir = Path(__file__).parent.parent.parent / 'data' / dataset
-
-        energy_dist_file = self.processed_data_dir / 'energy_dist.npz'
-        self.energy_div_calculator = DivergenceCalculator(energy_dist_file)
             
 
     def analyze(self, sampled_molecules: List[SampledMolecule], return_counts: bool = False, energy_div: bool = False, functional_validity: bool = False):
@@ -89,10 +85,7 @@ class SampleAnalyzer():
             counts_dict['sum_num_components'] = sum_num_components
             counts_dict['n_num_components'] = n_num_components
             return counts_dict
-        
-        if self.processed_data_dir is not None and Path(self.processed_data_dir).exists() and energy_div:
-            metrics_dict['energy_js_div'] = self.compute_energy_divergence(sampled_molecules)
-
+    
 
         return metrics_dict
 
@@ -155,19 +148,6 @@ class SampleAnalyzer():
                     energies.append(energy)
 
         return energies
-
-    def compute_energy_divergence(self, samples: List[SampledMolecule]):
-
-        if self.processed_data_dir is None:
-            raise ValueError('You must specify processed_data_dir upon initialization to compute energy divergences')
-
-        # compute the FF energy of each molecule
-        energies = self.compute_sample_energy(samples)
-
-        # compute the Jensen-Shannon divergence between the energy distribution of the samples and the training set
-        js_div = self.energy_div_calculator.js_divergence(energies)
-
-        return js_div
 
     def reos_and_rings(self, samples: List[SampledMolecule], return_raw=False):
         """ samples: list of SampledMolecule objects. """
