@@ -5,7 +5,7 @@ This script performs conditional sampling of molecules using a pre-trained FlowM
 applying classifier-free guidance to control the generation process.
 Parameters can be provided via command-line arguments.
 """
-
+import os
 import argparse
 import math
 import numpy as np
@@ -210,6 +210,7 @@ def main():
             print(f"  {metric}: {value}")
     
     # Write molecules to SDF file
+    os.makedirs(os.path.dirname(args.output_file), exist_ok=True)
     print(f"Writing {len(molecules)} molecules to {args.output_file}")
     sdf_writer = Chem.SDWriter(args.output_file)
     sdf_writer.SetKekulize(False)

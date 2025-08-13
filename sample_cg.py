@@ -4,7 +4,7 @@ Script for sampling molecules with classifier guidance in FlowMol.
 This script demonstrates how to use the classifier guidance extension to 
 guide molecule generation toward specific target properties.
 """
-
+import os
 import argparse
 import math
 import numpy as np
@@ -220,6 +220,7 @@ def main():
             print(f"  {metric}: {value}")
     
     # Write molecules to SDF file
+    os.makedirs(os.path.dirname(args.output_file), exist_ok=True)
     print(f"Writing {len(molecules)} molecules to {args.output_file}")
     sdf_writer = Chem.SDWriter(args.output_file)
     sdf_writer.SetKekulize(False)

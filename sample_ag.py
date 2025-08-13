@@ -8,7 +8,7 @@ This script performs sampling of molecules using two FlowMol models:
 By combining predictions from both models with guidance weights, we can control 
 the generation process without needing classifier-free guidance training.
 """
-
+import os
 import argparse
 import math
 import numpy as np
@@ -627,6 +627,7 @@ def main():
             print(f"  {metric}: {value}")
     
     # Write molecules to SDF file
+    os.makedirs(os.path.dirname(args.output_file), exist_ok=True)
     print(f"Writing {len(molecules)} molecules to {args.output_file}")
     sdf_writer = Chem.SDWriter(args.output_file)
     sdf_writer.SetKekulize(False)
