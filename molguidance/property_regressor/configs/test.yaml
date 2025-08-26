@@ -1,0 +1,28 @@
+dataset:
+  atom_map:
+  - C
+  - H
+  - N
+  - O
+  - F
+  processed_data_dir: data/qm9
+mol_fm:
+  parameterization: ctmc
+  prior_config:
+    a:
+      align: false
+      kwargs: {}
+      type: ctmc
+    c:
+      align: false
+      kwargs: {}
+      type: ctmc
+    e:
+      align: false
+      kwargs: {}
+      type: ctmc
+    x:
+      align: true
+      kwargs:
+        std: 1.0
+      type: centered-normal

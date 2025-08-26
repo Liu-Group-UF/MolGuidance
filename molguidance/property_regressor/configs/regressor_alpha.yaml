@@ -1,0 +1,49 @@
+dataset:
+  dataset_name: qm9
+  processed_data_dir: data/qm9 
+  conditioning:
+    enabled: true
+    property: alpha  # Property to predict
+    normalize: true
+  use_first_half_training_set: false
+model:
+  scalar_size: 256
+  vector_size: 16
+  n_tasks: 1
+  num_layers: 3
+  dropout: 0.0
+  pooling_type: mean
+training:
+  output_dir: molguidance/property_regressor/model_output_qm9
+  batch_size: 128
+  num_workers: 4
+  learning_rate: 1.0e-3
+  weight_decay: 1.0e-4
+  scheduler_patience: 10
+  scheduler_factor: 0.5  
+  trainer_args:
+    accelerator: gpu
+    accumulate_grad_batches: 1
+    devices: 1
+    max_epochs: 1000 
+    num_nodes: 1
+mol_fm:
+  parameterization: ctmc
+  prior_config:
+    a:
+      align: false
+      kwargs: {}
+      type: ctmc
+    c:
+      align: false
+      kwargs: {}
+      type: ctmc
+    e:
+      align: false
+      kwargs: {}
+      type: ctmc
+    x:
+      align: true
+      kwargs:
+        std: 1.0
+      type: centered-normal
