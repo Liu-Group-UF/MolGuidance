@@ -1,27 +1,55 @@
 name: molguidance
 channels:
+  - nvidia/label/cuda-12.8.1
   - pytorch
-  - nvidia
-  - pyg
-  - dglteam/label/cu124
   - conda-forge
+  - defaults
+  - dglteam/label/th24_cu124
 dependencies:
-  - python=3.12
-  - pytorch=2.7.1+cu128
-  - torchvision
-  - torchaudio
-  - pytorch-cuda=12.8
-  - pytorch-cluster=1.6.3+pt27cu128
-  - pytorch-scatter=2.1.2+pt27cu128
-  - dgl=2.4.0+cu124
-  - pytorch-lightning=2.5.2
-  - rdkit=2025.3.3
-  - pystow
-  - einops
+  # Core Python and CUDA
+  - python==3.12
+  - nvidia/label/cuda-12.8.1::cuda-toolkit
+  
+  # DGL (Deep Graph Library)
+  - dglteam/label/th24_cu124::dgl=2.4.0.th24.cu124
+
+  # Open Babel for cheminformatics
+  - conda-forge::openbabel
+
   - pip
+    
+  # Pip dependencies
   - pip:
-      - wandb
-      - useful_rdkit_utils
-      - py3Dmol
-      - ase
-      - scikit-optimize
+    # PyTorch ecosystem (CUDA 12.8 compatible)
+    - torch==2.7.0 --index-url https://download.pytorch.org/whl/cu128
+    - torchvision==0.22.0 --index-url https://download.pytorch.org/whl/cu128
+    - torchaudio==2.7.0 --index-url https://download.pytorch.org/whl/cu128
+    
+    # PyTorch Geometric ecosystem
+    - --find-links https://data.pyg.org/whl/torch-2.7.0%2Bcu128.html
+    - torch-cluster
+    - torch_scatter
+    - torch_sparse
+    
+    # Machine Learning frameworks
+    - pytorch-lightning==2.5.2
+    - scikit-learn==1.7.1
+    - scikit-optimize==0.10.2
+
+    # Utility libraries
+    - networkx==3.1
+    - einops==0.8.1
+    - torchtyping
+    
+    # Chemistry and molecular libraries
+    - rdkit==2025.3.5
+    - py3Dmol==2.5.2
+    - useful-rdkit-utils==0.90
+    - posebusters==0.5.0
+    - ase
+    
+    # Experiment tracking
+    - wandb
+    
+    # Local package (install in development mode)
+    - -e .

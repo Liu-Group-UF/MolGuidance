@@ -150,7 +150,7 @@ def process_split(split_features, split_df, split_name, split_bond_counts, datas
     all_bond_idxs = all_bond_idxs.type(torch.int32)
 
 
-    property_names = "dipole_total"
+    property_names = "mu"
 
     # extract property from the split_df and convert to tensor
     properties_tensor = torch.tensor(split_df[property_names].values, dtype=torch.float32)
