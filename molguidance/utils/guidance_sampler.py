@@ -204,9 +204,9 @@ def _handle_categorical_feature(feat, good_model, bad_model, good_pred, bad_pred
     
     return xt, x_1_sampled
 
-from flowmol.data_processing.utils import build_edge_idxs, get_batch_idxs, get_upper_edge_mask
-from flowmol.analysis.molecule_builder import SampledMolecule
-from flowmol.models.ctmc_vector_field import PROPERTY_MAP
+from molguidance.data_processing.utils import build_edge_idxs, get_batch_idxs, get_upper_edge_mask
+from molguidance.analysis.molecule_builder import SampledMolecule
+from molguidance.models.ctmc_vector_field import PROPERTY_MAP
 @torch.no_grad()
 def sample_with_auto_guidance(good_model, bad_model, n_atoms, guide_w, **kwargs):
     """Sample molecules using auto-guidance with good and bad models"""
