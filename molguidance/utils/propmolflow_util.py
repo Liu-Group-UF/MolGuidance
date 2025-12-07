@@ -33,14 +33,14 @@ Hartree2eV=27.2114
 
 def load_model_from_ckpt(ckpt, method=None):
     """Load PropFlowMol model from a checkpoint file."""
-    from flowmol.models.flowmol import FlowMol
+    from molguidance.models.flowmol import FlowMol
     if not method:
         model = FlowMol.load_from_checkpoint(ckpt)
     elif method == 'cfg':
-        from flowmol.models.classifier_free_guidance import ClassifierFreeGuidance
+        from molguidance.models.classifier_free_guidance import ClassifierFreeGuidance
         model = ClassifierFreeGuidance.load_from_checkpoint(ckpt)
     elif method == 'mg':
-        from flowmol.models.model_guidance_scale import ModelGuidance
+        from molguidance.models.model_guidance_scale import ModelGuidance
         model = ModelGuidance.load_from_checkpoint(ckpt)
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     model.to(device)
@@ -97,7 +97,7 @@ def sample_molecules(model,
         molecules.extend(batch_molecules)
     return molecules
 
-from flowmol.analysis.metrics import SampleAnalyzer
+from molguidance.analysis.metrics import SampleAnalyzer
 def get_flowmol_metrics(sampledmolecules, energy_div=True, functional_validity=True):
     """Compute the metrics for the generated molecules, including:
     Atomic stability
@@ -308,14 +308,14 @@ class MoleculePredictor:
         
         return torch.cat(predictions, dim=0) if predictions else None
 
-regressor_folder = "/blue/mingjieliu/jiruijin/diffusion/FlowMol/flowmol/property_regressor"
+regressor_folder = "/blue/mingjieliu/jiruijin/github/MolGuidance/molguidance/property_regressor"
 # config = f'{regressor_folder}/configs/test.yaml'
 config = f'{regressor_folder}/configs/test_qme14s.yaml'
 
 def get_gvp_preds(mols, property_name):
     n_mols = len(mols)
     # checkpoint = f'{regressor_folder}/model_output/{property_name}/checkpoints/last.ckpt'
-    checkpoint = f'{regressor_folder}/model_output_qme14s/{property_name}/last.ckpt'
+    checkpoint = f'{regressor_folder}/model_output_qme14s/{property_name}/checkpoints/gvp-regressor-epoch=443-val_loss=0.0334.ckpt'
     model = MoleculePredictor(checkpoint, config, property_name)
     graph_valid = []
     graphs = []
