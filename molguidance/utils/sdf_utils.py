@@ -1,8 +1,9 @@
 import os
 import numpy as np
 import pandas as pd
-from rdkit import Chem
-from .gaussian_utils import extract_last_optimized_geometry
+from rdkit import Chem, RDLogger
+RDLogger.DisableLog('rdApp.*')
+# from .gaussian_utils import extract_last_optimized_geometry
 from rdkit.Chem import rdDetermineBonds
 from collections import defaultdict, Counter
 import math
@@ -52,7 +53,7 @@ def get_rdkit_valid(sdf_file, n_mols=1000):
     suppl = Chem.SDMolSupplier(sdf_file, removeHs=False, sanitize=True)
     suppl = [_ for i, _ in enumerate(suppl) if i < n_mols]
     sdf_valid_index = [i for i, mol in enumerate(suppl) if mol is not None]
-    return sdf_valid_index, suppl
+    return len(sdf_valid_index)/n_mols
 
 def remove_mol_with_multifrags(sdf_file):
     suppl = Chem.SDMolSupplier(sdf_file, removeHs=False, sanitize=True)
@@ -101,24 +102,31 @@ def molecules_to_sdf(molecules, output_sdf_file):
 from posebusters import PoseBusters
 from pathlib import Path
 import numpy as np
-def get_pb_valid_results(raw_mols, sdf_file):
+def get_pb_valid_results(sdf_file):
+    RDLogger.DisableLog('rdApp.*')
+    raw_mols = Chem.SDMolSupplier(sdf_file, removeHs=False, sanitize=False)
     rdkit_valid_mols, valid_indices = [], []
     for i, mol in enumerate(raw_mols):
         if mol is not None:
             rdkit_valid_mols.append(mol)
             valid_indices.append(i)
-    molecules_to_sdf(rdkit_valid_mols, sdf_file)
-    pred_file = Path(sdf_file)
-    buster = PoseBusters(config="mol")
-    df = buster.bust([pred_file], None, None, full_report=True)
-    csv_file = sdf_file.replace('.sdf', '.csv')
     
-    df['all_cond'] = True
-    mask = True
-    for col_ind in range(0, 10):
-        mask &= df.iloc[:, col_ind]
-    df['all_cond'] = df['all_cond'][mask]
-    df.to_csv(csv_file, index=False)
+    csv_file = sdf_file.replace('.sdf', '.csv')
+    if not Path(csv_file).exists():
+        molecules_to_sdf(rdkit_valid_mols, sdf_file)
+        pred_file = Path(sdf_file)
+        buster = PoseBusters(config="mol")
+        df = buster.bust([pred_file], None, None, full_report=True)
+
+        df['all_cond'] = True
+        mask = True
+        for col_ind in range(0, 10):
+            mask &= df.iloc[:, col_ind]
+        df['all_cond'] = df['all_cond'][mask]
+        df.to_csv(csv_file, index=False)
+    else:
+        df = pd.read_csv(csv_file)
+
     pb_valid_inds = np.where(df['all_cond'].values == True)[0]
     pb_inds_remapped = np.array(valid_indices)[pb_valid_inds]
     mols_pb = np.array(rdkit_valid_mols)[pb_valid_inds]
@@ -173,7 +181,7 @@ def check_valency_charge_balance(file_path, condition=1):
         atom_validities = []
         for atom in atoms:
             symbol = atom.GetSymbol()
-            valence = atom.GetExplicitValence()
+            valence = atom.GetValence(Chem.ValenceType.EXPLICIT)
             charge = atom.GetFormalCharge()
             total_charge += charge
             expected = Chem.GetPeriodicTable().GetDefaultValence(symbol)
@@ -262,6 +270,7 @@ def get_closed_shell_valid(file_path, n_mols):
 
 def get_uniqueness_rate(sdf_file, n_raw=10000, sanitize=True):
     """Extract SMILES from an SDF file."""
+    RDLogger.DisableLog('rdApp.*')
     supplier = Chem.SDMolSupplier(sdf_file, removeHs=False, sanitize=sanitize)
     smiles_list = [Chem.MolToSmiles(mol) for mol in supplier if mol is not None]
     n_unique = len(set(smiles_list)) # unique and valid rdkit mols
@@ -279,8 +288,7 @@ def calculate_novelty_rate(generated_smiles, training_smiles):
 
 def compute_all_standard_metrics(sdf_file, n_mols=10000):
     valid_mol_indices, mol_ratio, atom_ratio, valid_mols = check_valency_charge_balance(sdf_file)
-    sdf_valid_index, suppl = get_rdkit_valid(sdf_file, n_mols=n_mols)
-    rdkit_valid = len(sdf_valid_index) / n_mols
+    rdkit_valid = get_rdkit_valid(sdf_file, n_mols=n_mols)
     # _, valid_and_unique = get_uniqueness_rate(sdf_file, n_raw=n_mols)
     valid_and_unique = None
     close_shell_ratio = get_close_shell_ratio_from_sdf(sdf_file)
