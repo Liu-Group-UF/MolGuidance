@@ -43,17 +43,20 @@ class MoleculePredictor:
 
         # Load normalization parameters if they exist
         norm_params_path = Path(self.config['dataset']['processed_data_dir']) / 'train_data_property_normalization.pt'
+        print(f"Loading normalization parameters from: {norm_params_path}")
         self.dataset_name = self.config['dataset'].get('dataset_name', 'qm9')
+        print(f"Dataset name: {self.dataset_name}")
         if self.dataset_name == 'qm9':
             self.property_idx = PROPERTY_MAP[property_name]
         if norm_params_path.exists():
             self.norm_params = torch.load(norm_params_path)
+            print(f"std: {self.norm_params['std']}, mean: {self.norm_params['mean']}")
         else:
             self.norm_params = None
 
     def process_sdf(self, sdf_path: str, properties=None) -> tuple:
         """Process molecules from an SDF file"""
-        mol_supplier = Chem.SDMolSupplier(sdf_path, removeHs=False, sanitize=True)
+        mol_supplier = Chem.SDMolSupplier(sdf_path, removeHs=False, sanitize=False)
         graphs = []
         self.successful_indices = []  # Reset successful indices
         
@@ -257,9 +260,10 @@ def main():
         'predictions': predictions.numpy(),
         'property_name': args.property_name, 
     }
-    os.makedirs("prediction_result", exist_ok=True)
-    output_path = Path("prediction_result") / args.output
-    torch.save(results, output_path)
+    # os.makedirs("prediction_result", exist_ok=True)
+    # output_path = Path("prediction_result") / args.output
+    # torch.save(results, output_path)
+    torch.save(results, args.output)
 
     if filtered_properties is not None:
         mae = calculate_mae(filtered_properties, results['predictions'])
