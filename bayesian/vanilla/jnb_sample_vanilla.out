@@ -1,0 +1,27 @@
+/blue/mingjieliu/jiruijin/github/MolGuidance
+c0602a-s9.ufhpc
+Thu Dec 11 10:19:51 AM EST 2025
+Using device: cuda:0
+Loading model from checkpoints/qme14s/mu/vanilla/epoch=1621-step=887232.ckpt
+Loading multiple property values from sampling_input/qme14s/in_distribution_sampling/train_half_sampled_values_mu.npy
+Loading number of atoms from sampling_input/qme14s/in_distribution_sampling/train_half_sampled_no_atoms_mu.npy
+Sampling 10000 molecules in 79 batches
+
+Error messages: AtomValence 80, Kekulize 14, other 0,  -- No error 9906
+FlowMol original metrics:
+ Analysis results:
+  frac_atoms_stable: 0.9989683295485068
+  frac_mols_stable_valence: 0.9837
+  frac_valid_mols: 0.9906
+  avg_frag_frac: 0.9993420837828036
+  avg_num_components: 1.0032
+  flag_rate: 1.1584208400646203
+  ood_rate: 0.3179523424878837
+Successfully wrote 10000 valid molecules to bayesian/vanilla/vanilla.sdf
+
+PropMolFlow Metrics:
+  rdkit_valid: 0.9904
+  valid_and_unique: 0.9485
+  close_shell_ratio: 0.9843
+  atom_stable: 0.9991
+  mol_stable: 0.9861

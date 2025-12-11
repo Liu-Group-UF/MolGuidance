@@ -1,4 +1,5 @@
 # MolGuidance
+![Image](overview_fig.jpg)
 1. This molguidance framework is built on top of our previous work **[PropMolFlow](https://github.com/Liu-Group-UF/PropMolFlow)**.
 <!-- 2. You can also clone this repoistory from branch from our **[PropMolFlow](https://github.com/Liu-Group-UF/PropMolFlow)** repoistory without the need to create an new environment if you installed propmolflow before. -->
 2. What new here is that we implement different guidance methods and guidance format for conditonal flow matching framework. Moreover, we introudced a new dataset **[QMe14S](https://pubs.acs.org/doi/10.1021/acs.jpclett.5c00839)** beyond **QM9** to test the scalability of the our methods.
@@ -66,6 +67,14 @@ mv cleaned_qme14s.sdf.zip data/qme14s_raw/
 #### Generate Training, Validation, Testing Data
 ```bash
 python process_qme14s_cond.py --config=configs/qme14s/mu/qme14s_vanilla.yaml
+```
+
+## Checkpoints
+All the trained model checkpoints can be found at our [Zenodo repository](https://zenodo.org/records/16847162). Can aslo get it by running:
+```bash
+wget https://zenodo.org/records/16847162/files/checkpoints.zip
+unzip checkpoints.zip
+rm checkpoints.zip
 ```
 
 ## Vanilla Model

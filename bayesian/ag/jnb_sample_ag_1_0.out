@@ -1,0 +1,241 @@
+/blue/mingjieliu/jiruijin/github/MolGuidance
+c0602a-s24.ufhpc
+Wed Dec 10 13:32:08 EST 2025
+[13:46:55] Explicit valence for atom # 13 O, 3, is greater than permitted
+[13:46:55] Explicit valence for atom # 8 O, 3, is greater than permitted
+[13:46:55] Explicit valence for atom # 10 B, 4, is greater than permitted
+[13:46:55] Explicit valence for atom # 8 Si, 4, is greater than permitted
+[13:46:55] Explicit valence for atom # 6 Al, 4, is greater than permitted
+[13:46:55] Explicit valence for atom # 15 N, 4, is greater than permitted
+[13:46:55] Can't kekulize mol.  Unkekulized atoms: 5 6 7 10 14
+[13:46:55] Explicit valence for atom # 2 C, 5, is greater than permitted
+[13:46:55] Can't kekulize mol.  Unkekulized atoms: 1 9 10
+[13:46:55] Explicit valence for atom # 6 N, 4, is greater than permitted
+[13:46:55] Explicit valence for atom # 6 Al, 4, is greater than permitted
+[13:46:55] Explicit valence for atom # 3 C, 5, is greater than permitted
+[13:46:55] Explicit valence for atom # 6 Al, 4, is greater than permitted
+[13:46:55] Explicit valence for atom # 11 Al, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 1 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 9 N, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 15 H, 2, is greater than permitted
+[13:46:56] Explicit valence for atom # 5 C, 4, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 0 1 4 5 8
+[13:46:56] Explicit valence for atom # 11 S, 7, is greater than permitted
+[13:46:56] Explicit valence for atom # 12 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 9 O, 2, is greater than permitted
+[13:46:56] Explicit valence for atom # 7 N, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 9 H, 2, is greater than permitted
+[13:46:56] Explicit valence for atom # 18 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 10 Si, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 7 O, 3, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 0 6 16
+[13:46:56] Explicit valence for atom # 7 S, 7, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 0 3 6 7 9 10 15
+[13:46:56] Explicit valence for atom # 5 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 13 Al, 4, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 0 8 13
+[13:46:56] Explicit valence for atom # 4 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 3 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 3 Al, 4, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 2 4
+[13:46:56] Explicit valence for atom # 8 N, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 10 H, 2, is greater than permitted
+[13:46:56] Explicit valence for atom # 0 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 5 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 0 Al, 4, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 4 8 11 12 16
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 4 13 19
+[13:46:56] Explicit valence for atom # 5 S, 7, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 8 13 15
+[13:46:56] Explicit valence for atom # 10 C, 5, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 20
+[13:46:56] Explicit valence for atom # 17 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 7 O, 3, is greater than permitted
+[13:46:56] Explicit valence for atom # 12 S, 7, is greater than permitted
+[13:46:56] Explicit valence for atom # 9 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 6 C, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 4 H, 2, is greater than permitted
+[13:46:56] Explicit valence for atom # 7 Al, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 9 O, 3, is greater than permitted
+[13:46:56] Explicit valence for atom # 7 O, 3, is greater than permitted
+[13:46:56] Explicit valence for atom # 9 Al, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 9 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 8 C, 5, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 7 16 17
+[13:46:56] Explicit valence for atom # 4 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 3 S, 7, is greater than permitted
+[13:46:56] Explicit valence for atom # 20 C, 5, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 0 3 4 6 9
+[13:46:56] Explicit valence for atom # 0 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 1 Al, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 13 O, 3, is greater than permitted
+[13:46:56] Explicit valence for atom # 8 O, 3, is greater than permitted
+[13:46:56] Explicit valence for atom # 10 B, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 8 Si, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 6 Al, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 15 N, 4, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 5 6 7 10 14
+[13:46:56] Explicit valence for atom # 2 C, 5, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 1 9 10
+[13:46:56] Explicit valence for atom # 6 N, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 6 Al, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 3 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 6 Al, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 11 Al, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 1 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 9 N, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 15 H, 2, is greater than permitted
+[13:46:56] Explicit valence for atom # 5 C, 4, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 0 1 4 5 9
+[13:46:56] Explicit valence for atom # 11 S, 7, is greater than permitted
+[13:46:56] Explicit valence for atom # 12 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 9 O, 2, is greater than permitted
+[13:46:56] Explicit valence for atom # 7 N, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 9 H, 2, is greater than permitted
+[13:46:56] Explicit valence for atom # 18 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 10 Si, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 7 O, 3, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 0 6 16
+[13:46:56] Explicit valence for atom # 7 S, 7, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 0 3 6 7 9 10 15
+[13:46:56] Explicit valence for atom # 5 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 13 Al, 4, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 0 8 13
+[13:46:56] Explicit valence for atom # 4 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 3 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 3 Al, 4, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 2 4
+[13:46:56] Explicit valence for atom # 8 N, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 10 H, 2, is greater than permitted
+[13:46:56] Explicit valence for atom # 0 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 5 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 0 Al, 4, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 4 8 11 12 16
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 4 13 19
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 5 8 12 28 32
+[13:46:56] Explicit valence for atom # 5 S, 7, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 8 13 15
+[13:46:56] Explicit valence for atom # 10 C, 5, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 20
+[13:46:56] Explicit valence for atom # 17 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 7 O, 3, is greater than permitted
+[13:46:56] Explicit valence for atom # 12 S, 7, is greater than permitted
+[13:46:56] Explicit valence for atom # 9 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 6 C, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 4 H, 2, is greater than permitted
+[13:46:56] Explicit valence for atom # 7 Al, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 9 O, 3, is greater than permitted
+[13:46:56] Explicit valence for atom # 7 O, 3, is greater than permitted
+[13:46:56] Explicit valence for atom # 9 Al, 4, is greater than permitted
+[13:46:56] Explicit valence for atom # 9 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 8 C, 5, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 7 16 17
+[13:46:56] Explicit valence for atom # 4 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 3 S, 7, is greater than permitted
+[13:46:56] Explicit valence for atom # 20 C, 5, is greater than permitted
+[13:46:56] Can't kekulize mol.  Unkekulized atoms: 0 3 4 6 9
+[13:46:56] Explicit valence for atom # 0 C, 5, is greater than permitted
+[13:46:56] Explicit valence for atom # 1 Al, 5, is greater than permitted
+Using device: cuda:0
+
+Loading good model from checkpoints/qme14s/mu/vanilla/epoch=1621-step=887232.ckpt
+Loading bad model from checkpoints/qme14s/mu/auto_guidance/model-step=step=40000.ckpt
+Using guidance weights: {'x': 2.7, 'a': 1.1, 'c': 1.1, 'e': 1.1}
+
+Loading multiple property values from sampling_input/qme14s/in_distribution_sampling/train_half_sampled_values_mu.npy
+
+Loading number of atoms from sampling_input/qme14s/in_distribution_sampling/train_half_sampled_no_atoms_mu.npy
+
+Sampling 10000 molecules in 79 batches
+
+Batch 1/79
+Batch 2/79
+Batch 3/79
+Batch 4/79
+Batch 5/79
+Batch 6/79
+Batch 7/79
+Batch 8/79
+Batch 9/79
+Batch 10/79
+Batch 11/79
+Batch 12/79
+Batch 13/79
+Batch 14/79
+Batch 15/79
+Batch 16/79
+Batch 17/79
+Batch 18/79
+Batch 19/79
+Batch 20/79
+Batch 21/79
+Batch 22/79
+Batch 23/79
+Batch 24/79
+Batch 25/79
+Batch 26/79
+Batch 27/79
+Batch 28/79
+Batch 29/79
+Batch 30/79
+Batch 31/79
+Batch 32/79
+Batch 33/79
+Batch 34/79
+Batch 35/79
+Batch 36/79
+Batch 37/79
+Batch 38/79
+Batch 39/79
+Batch 40/79
+Batch 41/79
+Batch 42/79
+Batch 43/79
+Batch 44/79
+Batch 45/79
+Batch 46/79
+Batch 47/79
+Batch 48/79
+Batch 49/79
+Batch 50/79
+Batch 51/79
+Batch 52/79
+Batch 53/79
+Batch 54/79
+Batch 55/79
+Batch 56/79
+Batch 57/79
+Batch 58/79
+Batch 59/79
+Batch 60/79
+Batch 61/79
+Batch 62/79
+Batch 63/79
+Batch 64/79
+Batch 65/79
+Batch 66/79
+Batch 67/79
+Batch 68/79
+Batch 69/79
+Batch 70/79
+Batch 71/79
+Batch 72/79
+Batch 73/79
+Batch 74/79
+Batch 75/79
+Batch 76/79
+Batch 77/79
+Batch 78/79
+Batch 79/79
+Analyzing molecules...
+Error messages: AtomValence 54, Kekulize 13, other 0,  -- No error 9933
+Analysis results:
+  frac_atoms_stable: 0.9988706566063537
+  frac_mols_stable_valence: 0.9831
+  frac_valid_mols: 0.9933
+  avg_frag_frac: 0.9996520033382147
+  avg_num_components: 1.0018
+  flag_rate: 1.1683447442609747
+  ood_rate: 0.2990334273056786
+Writing 10000 molecules to ./ag_guidance_best_w.sdf
+Successfully wrote 10000 valid molecules to ./ag_guidance_best_w.sdf
