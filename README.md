@@ -9,7 +9,7 @@
 
 Run the following commands in your terminal to set up `molguidance` (We have tested it on **Nvidia L4 and Blackwell B200** GPUs): 
 ```python
-conda create -n molguidance python=3.12 nvidia/label/cuda-12.8.1::cuda-toolkit
+conda create -n molguidance python=3.12 
 conda activate molguidance
 pip install torch==2.7.0 torchvision==0.22.0 torchaudio==2.7.0 --index-url https://download.pytorch.org/whl/cu128
 pip install torch-cluster torch_scatter torch_sparse -f https://data.pyg.org/whl/torch-2.7.0%2Bcu128.html
@@ -175,7 +175,7 @@ python sample_ag.py --good_model_checkpoint "checkpoints/qm9/alpha/vanilla/epoch
 python sample_ag.py --good_model_checkpoint "checkpoints/qme14s/mu/vanilla/epoch=1621-step=887232.ckpt" --bad_model_checkpoint "checkpoints/qme14s/mu/auto_guidance/model-step=step=40000.ckpt" --n_mols 10000 --max_batch_size 128 --n_timesteps 100 --properties_handle_method "concatenate_sum" --multilple_values_file "sampling_input/qme14s/in_distribution_sampling/train_half_sampled_values_mu.npy" --number_of_atoms "sampling_input/qme14s/in_distribution_sampling/train_half_sampled_no_atoms_mu.npy" --normalization_file_path "data/qme14s/train_data_property_normalization.pt" --guide_w_x 1.5 --guide_w_a 1.5 --guide_w_c 1.5 --guide_w_c 1.5 --dfm_type "campbell_rate_matrix" --guidance_format "log" --where_to_apply_guide "probabilities" --output_file "sampling_result/qme14s/probability_log/ag.sdf" --analyze
 ```
 
-## Modelguidance 
+## Model Guidance 
 ### Training
 #### QM9 (take property alpha as example)
 ```python
@@ -204,7 +204,13 @@ python sample_mg.py --model_checkpoint "checkpoints/qme14s/mu/model_guidance/epo
 ```
 
 ## Bonous: Classifier Guidance 
+We didn't include classifier guidance in our main paper due to the poor performance compared with CFG and the extra training cost of the classifier. However, we still provide the code for training the classifier here for reader's interest.
 
+ - The training code for classifier is on `modelguidance/classifier`
+ - The sampling code with classifier guidance is on `sample_cg.py`
+
+## Bayesian Optimization with Molguidance
+We provide how we use Molguidance for Bayesian Optimization in the `bayesian` folder. Please refer to the `README.md` file in that folder for more details.
 
 ## Acknowledgements
 

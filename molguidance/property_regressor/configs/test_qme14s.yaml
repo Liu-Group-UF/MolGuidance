@@ -14,7 +14,7 @@ dataset:
   - As
   - Al
   - Si
-  processed_data_dir: data/qme14s
+  processed_data_dir: /blue/mingjieliu/jiruijin/github/MolGuidance/data/qme14s
   dataset_name: qme14s
 mol_fm:
   parameterization: ctmc

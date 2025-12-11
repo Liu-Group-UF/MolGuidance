@@ -6,6 +6,7 @@ RDLogger.DisableLog('rdApp.*')
 # from .gaussian_utils import extract_last_optimized_geometry
 from rdkit.Chem import rdDetermineBonds
 from collections import defaultdict, Counter
+from scipy.stats import entropy
 import math
 
 def write_xyz(geometry, xyz_filename):
@@ -408,7 +409,115 @@ def calculate_bond_entropy(mols):
 
     return bond_entropy, total_bond_types
 
+def get_bond_entropy(sdf_files, titles):
+    RDLogger.DisableLog('rdApp.*')
+    # sdf_files : list of str (file paths)
+    # titles: method names corresponding to sdf_files
+
+    bond_entropies = []
+    bond_type_distributions = []
+
+    for sdf_file in sdf_files:
+        suppl = Chem.SDMolSupplier(sdf_file, removeHs=False, sanitize=True)
+        mols = [mol for mol in suppl if mol is not None]
+        bond_entropy, bond_types = calculate_bond_entropy(mols)
+        bond_entropies.append(bond_entropy)
+        bond_type_distributions.append(bond_types)
+
+    metrics_data = []
+    
+    for entropy, bond_types, title in zip(bond_entropies, bond_type_distributions, titles):
+        bond_type_str = ', '.join([f'{k}: {v}' for k, v in bond_types.items()])
+        metrics_data.append({
+            'Method': title,
+            'Bond Entropy': f'{entropy:.3f}',
+            'Bond Type Distribution': bond_type_str
+        })
+    
+    df = pd.DataFrame(metrics_data)
+    return df
+
 def load_molecules(sdf_file):
     suppl = Chem.SDMolSupplier(sdf_file, removeHs=False, sanitize=True) # must be sanitized before calling many diversity analyzing functions
     mols = [mol for mol in suppl if mol is not None]
     return mols
+
+def get_element_entropy(sdf_files, titles):
+    RDLogger.DisableLog('rdApp.*')
+    # sdf_files : list of str (file paths)
+    # titles: method names corresponding to sdf_files
+
+    # Analyze each SDF file
+    element_counts_all = []
+    
+    for sdf_file in sdf_files:
+        element_counter = Counter()
+        mol_count = 0
+        
+        # Read molecules from SDF file
+        supplier = Chem.SDMolSupplier(sdf_file, removeHs=False, sanitize=True)
+        
+        for mol in supplier:
+            if mol is not None:
+                mol_count += 1
+                # Count atoms in this molecule
+                for atom in mol.GetAtoms():
+                    element = atom.GetSymbol()
+                    element_counter[element] += 1
+
+        element_counts_all.append(dict(element_counter))
+
+    metrics_data = []
+    
+    for counts, title in zip(element_counts_all, titles):
+        total = sum(counts.values())
+        proportions = np.array([c/total for c in counts.values()])
+        
+        # Shannon entropy (bits) - higher = more diverse
+        shannon_entropy = entropy(proportions, base=2)
+    
+        metrics_data.append({
+            'Method': title,
+            'Shannon Entropy': f'{shannon_entropy:.3f}',
+        })
+    
+    df = pd.DataFrame(metrics_data)
+    return df
+
+def calculate_scaffold_diversity(sdf_file):
+    RDLogger.DisableLog('rdApp.*')
+    suppl = Chem.SDMolSupplier(sdf_file, removeHs=False, sanitize=True)
+    mols = [mol for mol in suppl if mol is not None]
+
+    from rdkit.Chem.Scaffolds import MurckoScaffold
+    
+    # Generate scaffolds
+    scaffolds = [MurckoScaffold.GetScaffoldForMol(mol) for mol in mols]
+    scaffold_smiles = [Chem.MolToSmiles(scaffold) for scaffold in scaffolds]
+    
+    # Count unique scaffolds
+    unique_scaffolds = set(scaffold_smiles)
+    scaffold_diversity = len(unique_scaffolds) / len(mols)
+    
+    return scaffold_diversity
+
+def get_scaffold_diversity(sdf_files, titles):
+    # sdf_files : list of str (file paths)
+    # titles: method names corresponding to sdf_files
+
+    scaffold_diversities = []
+    
+    for sdf_file in sdf_files:
+        diversity = calculate_scaffold_diversity(sdf_file)
+        scaffold_diversities.append(diversity)
+
+    metrics_data = []
+    
+    for diversity, title in zip(scaffold_diversities, titles):
+        metrics_data.append({
+            'Method': title,
+            'Scaffold Diversity': f'{diversity:.3f}',
+        })
+    
+    df = pd.DataFrame(metrics_data)
+    return df

@@ -1,9 +1,3 @@
-"""
-Script for conditional molecule sampling with FlowMol
-
-This script performs conditional sampling of molecules using a pre-trained FlowMol model.
-Parameters can be provided via command-line arguments.
-"""
 import os
 import argparse
 import math
@@ -12,12 +6,13 @@ import torch
 from pathlib import Path
 from rdkit import Chem
 
+# FlowMol imports
 from molguidance.models.flowmol import FlowMol
-from molguidance.analysis.molecule_builder import SampledMolecule
 from molguidance.analysis.metrics import SampleAnalyzer
+from molguidance.analysis.propmolflow_metrics import compute_all_standard_metrics
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="Conditional molecule sampling with FlowMol")
+    parser = argparse.ArgumentParser(description="Generate molecules with PropMolFlow.")
     
     # Model checkpoint
     parser.add_argument("--model_checkpoint", type=str, required=True,
@@ -32,19 +27,12 @@ def parse_arguments():
                         help="Number of atoms per molecule (if fixed)")
     parser.add_argument("--n_timesteps", type=int, default=100,
                         help="Number of timesteps for sampling")
-    parser.add_argument("--method", type=str, default="euler",
-                        choices=["euler", "midpoint"],
-                        help="Integration method")
     
     # Trajectory and metrics options
     parser.add_argument("--xt_traj", action="store_true",
                         help="Store x_t trajectory")
     parser.add_argument("--ep_traj", action="store_true",
                         help="Store episode trajectory")
-    parser.add_argument("--metrics", action="store_true",
-                        help="Compute metrics")
-    parser.add_argument("--baseline_comparison", action="store_true",
-                        help="Compare with baseline")
     
     # Stochasticity and thresholds
     parser.add_argument("--stochasticity", type=float, default=None,
@@ -57,8 +45,6 @@ def parse_arguments():
                         help="Property value for conditioning")
     parser.add_argument("--training_mode", action="store_true",
                         help="Use training mode")
-    parser.add_argument("--conditional_generation", action="store_true",
-                        help="Enable conditional generation")
     parser.add_argument("--property_name", type=str, default=None,
                         help="Property name")
     parser.add_argument("--normalization_file_path", type=str, default=None,
@@ -99,24 +85,17 @@ def main():
     # Load multiple property values if specified
     multilple_values_to_one_property, number_of_atoms = None, None
     if args.multilple_values_file is not None:
-        print(f"Loading multiple property values from {args.multilple_values_file}\n")
-        multilple_values_to_one_property = np.load(args.multilple_values_file).tolist()
+        print(f"Loading multiple property values from {args.multilple_values_file}")
+        multilple_values_to_one_property = np.load(args.multilple_values_file).tolist()[:args.n_mols]
     if args.number_of_atoms is not None:
-        print(f"Loading number of atoms from {args.number_of_atoms}\n")
-        number_of_atoms = np.load(args.number_of_atoms).tolist()
+        print(f"Loading number of atoms from {args.number_of_atoms}")
+        number_of_atoms = np.load(args.number_of_atoms).tolist()[:args.n_mols]
     
-    # Initialize analyzer if needed
-    if args.analyze:
-        analyzer = SampleAnalyzer()
-    
-    # Calculate number of batches
     n_batches = math.ceil(args.n_mols / args.max_batch_size)
     molecules = []
-    
+
     print(f"Sampling {args.n_mols} molecules in {n_batches} batches\n")
-    
-    # Sampling loop
-    for batch_idx in range(n_batches):
+    for _ in range(n_batches):
         # print(f"Batch {batch_idx+1}/{n_batches}")
         n_mols_needed = args.n_mols - len(molecules)
         batch_size = min(n_mols_needed, args.max_batch_size)
@@ -127,7 +106,7 @@ def main():
             batch_property = multilple_values_to_one_property[len(molecules): len(molecules) + batch_size]
         if number_of_atoms is not None:
             batch_no_of_atoms = number_of_atoms[len(molecules): len(molecules) + batch_size]
-        
+
         # Sample molecules
         if args.n_atoms_per_mol is None:
             batch_molecules = model.sample_random_sizes(
@@ -140,7 +119,6 @@ def main():
                 high_confidence_threshold=args.hc_thresh,
                 properties_for_sampling=args.properties_for_sampling,
                 training_mode=args.training_mode,
-                conditional_generation=args.conditional_generation,
                 property_name=args.property_name,
                 normalization_file_path=args.normalization_file_path,
                 properties_handle_method=args.properties_handle_method,
@@ -159,26 +137,24 @@ def main():
                 high_confidence_threshold=args.hc_thresh,
                 properties_for_sampling=args.properties_for_sampling,
                 training_mode=args.training_mode,
-                conditional_generation=args.conditional_generation,
                 property_name=args.property_name,
                 normalization_file_path=args.normalization_file_path,
                 properties_handle_method=args.properties_handle_method,
                 multilple_values_to_one_property=batch_property,
             )
-        
         molecules.extend(batch_molecules)
-    
+
     # Analyze molecules if requested
     if args.analyze:
-        print("Analyzing molecules...\n")
-        analysis_results = analyzer.analyze(molecules, energy_div=False, functional_validity=True)
-        print("Analysis results:\n")
+        analyzer = SampleAnalyzer()
+        analysis_results = analyzer.analyze(molecules, energy_div=True, functional_validity=True)
+        print("FlowMol original metrics:")
+        print(" Analysis results:")
         for metric, value in analysis_results.items():
             print(f"  {metric}: {value}")
     
     # Write molecules to SDF file
     os.makedirs(os.path.dirname(args.output_file), exist_ok=True)
-    print(f"Writing {len(molecules)} molecules to {args.output_file}\n")
     sdf_writer = Chem.SDWriter(args.output_file)
     sdf_writer.SetKekulize(False)
     valid_count = 0
@@ -188,8 +164,13 @@ def main():
             sdf_writer.write(rdkit_mol)
             valid_count += 1
     sdf_writer.close()
-    
-    print(f"Successfully wrote {valid_count} valid molecules to {args.output_file}")
+    print(f"Successfully wrote {valid_count} valid molecules to {args.output_file}\n")
+
+    # New metrics
+    new_metrics = compute_all_standard_metrics(args.output_file, n_mols=len(molecules))
+    print("PropMolFlow Metrics:")
+    for metric, value in new_metrics.items():
+        print(f"  {metric}: {value:.4f}")
 
 if __name__ == "__main__":
     main()

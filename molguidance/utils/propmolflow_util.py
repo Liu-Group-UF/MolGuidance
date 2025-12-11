@@ -308,14 +308,16 @@ class MoleculePredictor:
         
         return torch.cat(predictions, dim=0) if predictions else None
 
-regressor_folder = "/blue/mingjieliu/jiruijin/github/MolGuidance/molguidance/property_regressor"
-# config = f'{regressor_folder}/configs/test.yaml'
-config = f'{regressor_folder}/configs/test_qme14s.yaml'
 
-def get_gvp_preds(mols, property_name):
+def get_gvp_preds(mols, property_name, dataset_name):
     n_mols = len(mols)
-    # checkpoint = f'{regressor_folder}/model_output/{property_name}/checkpoints/last.ckpt'
-    checkpoint = f'{regressor_folder}/model_output_qme14s/{property_name}/checkpoints/gvp-regressor-epoch=443-val_loss=0.0334.ckpt'
+    regressor_folder = "/blue/mingjieliu/jiruijin/github/MolGuidance/molguidance/property_regressor"
+    if dataset_name == 'qm9':
+        config = f'{regressor_folder}/configs/test.yaml'
+        checkpoint = f'{regressor_folder}/model_output/{property_name}/checkpoints/last.ckpt'
+    elif dataset_name == 'qme14s':
+        config = f'{regressor_folder}/configs/test_qme14s.yaml'
+        checkpoint = f'{regressor_folder}/model_output_qme14s/{property_name}/checkpoints/gvp-regressor-epoch=443-val_loss=0.0334.ckpt'
     model = MoleculePredictor(checkpoint, config, property_name)
     graph_valid = []
     graphs = []
@@ -396,9 +398,9 @@ def mol_to_graph(mol):
             print(f"Failed to process molecule: {e}")
             return None
 
-def compute_mae_from_sdf(sdf_file, property_name, target_properties):
+def compute_mae_from_sdf(sdf_file, property_name, target_properties, dataset_name):
     mols = Chem.SDMolSupplier(sdf_file, removeHs=False, sanitize=False)
-    gvp_preds, _ = get_gvp_preds(mols, property_name)
+    gvp_preds, _ = get_gvp_preds(mols, property_name, dataset_name)
     mae = calculate_mae(target_properties, gvp_preds)
     return mae
 
