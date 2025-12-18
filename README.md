@@ -43,7 +43,7 @@ After downloading, move the **all_fixed_gdb9.sdf** file to the `data/qm9_raw/` d
 ```bash
 mv all_fixed_gdb9.sdf data/qm9_raw/
 ```
-The revised SDF file is also hosted at our HuggingFace [ColabFit rQM9](https://huggingface.co/datasets/colabfit/rQM9).
+The revised SDF file is the `rQM9_v0.sdf` sdf file and a later more complete fix leads to a new version of the sdf `rQM9_v1.sdf` with fewer unresolvable molecules, available at [zenodo version v3](https://zenodo.org/records/17726328) and also hosted at our HuggingFace [ColabFit rQM9](https://huggingface.co/datasets/colabfit/rQM9).
 
 #### Generate Training, Validation, Testing Data
 ```bash
