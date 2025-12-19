@@ -1,4 +1,8 @@
 # MolGuidance
+[![arXiv](https://img.shields.io/badge/arXiv-1234.56789-b31b1b.svg?style=flat)](https://arxiv.org/pdf/2512.12198)
+
+The paper: [*"Molguidance: Advanced Guidance Strategies for Conditional Molecular Generation with Flow Matching"*](https://arxiv.org/pdf/2512.12198). 
+
 ![Image](overview_fig.jpg)
 1. This molguidance framework is built on top of our previous work **[PropMolFlow](https://github.com/Liu-Group-UF/PropMolFlow)**.
 <!-- 2. You can also clone this repoistory from branch from our **[PropMolFlow](https://github.com/Liu-Group-UF/PropMolFlow)** repoistory without the need to create an new environment if you installed propmolflow before. -->
