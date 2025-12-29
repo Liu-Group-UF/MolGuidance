@@ -47,7 +47,7 @@ def create_relaxed_sdf(output_log_files, output_sdf_file='relaxed.sdf'):
         mols.append(mol)
     return mols, keep_inds
 
-def get_rdkit_valid(sdf_file, n_mols=1000):
+def get_rdkit_valid(sdf_file, n_mols=10000):
     from rdkit import RDLogger, Chem
     # Suppress RDKit warnings
     RDLogger.DisableLog('rdApp.*')
