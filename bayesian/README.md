@@ -20,8 +20,8 @@ Run `get_scores.ipynb` in each guidance method directory to calculate stability,
 ### 2. Property Prediction MAE
 In each guidance method directory, run `sbatch job_property_align/job_property_align.sh` to calculate property prediction MAE (or execute the script commands directly if SLURM is unavailable). Results will be saved in `result.pt`.
 
-### 3. PoseBuster Score
-Navigate to the **PoseBuster** directory and run `sbatch jnb.sh` to calculate PoseBuster scores (or execute the script commands directly if SLURM is unavailable). 
+### 3. PoseBusters Score
+Navigate to the **PoseBusters** directory and run `sbatch jnb.sh` to calculate PoseBuster scores (or execute the script commands directly if SLURM is unavailable). 
 
 **Prerequisite:** Ensure you have sampled SDF files from all four guidance methods before running this analysis.
 
