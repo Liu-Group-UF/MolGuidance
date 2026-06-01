@@ -21,7 +21,7 @@ pip install torch-cluster torch_scatter torch_sparse -f https://data.pyg.org/whl
 pip install pytorch-lightning==2.5.2
 pip install networkx==3.1
 pip install einops==0.8.1 rdkit==2025.3.5 py3Dmol==2.5.2 useful-rdkit-utils==0.90 scikit-learn==1.7.1 scikit-optimize==0.10.2 posebusters==0.5.0
-pip install torchtyping ase wandb 
+pip install torchtyping ase wandb jsonschema
 conda install conda-forge::openbabel
 conda install -c dglteam/label/th24_cu124 dgl=2.4.0.th24.cu124
 pip install -e .
@@ -225,6 +225,26 @@ We didn't include classifier guidance in our main paper due to the poor performa
 ## Bayesian Optimization with Molguidance
 We provide how we use Molguidance for Bayesian Optimization in the `bayesian` folder. Please refer to the `README.md` file in that folder for more details.
 
+## Molecular Stability Evaluation
+
+We provide a chemically rigorous molecular stability evaluation script that addresses known issues in widely-used stability metrics (see [Nikitin et al., *Digital Discovery*, 2025](https://pubs.rsc.org/en/content/articlehtml/2025/dd/d5dd00206k) for a detailed discussion of these issues).
+
+Specifically, earlier implementations (e.g., from MiDi and FlowMol) contained a bug in valency computation for aromatic bonds, which led to chemically implausible entries in the valency lookup table (e.g., neutral carbon with valency 3, neutral nitrogen with valency 2) and artificially inflated molecular stability scores. Our implementation addresses this by:
+- Using RDKit's explicit valence with charge-valence consistency checking (`valence - default_valence - formal_charge = 0`) for **QM9** (5 elements: C, H, O, N, F)
+- Adopting the corrected valency lookup table from Nikitin et al. for **QMe14S** (14 elements), which correctly handles multi-valent elements such as S (valency 2, 3, or 6), P (valency 3 or 5), and Si
+
+### Usage
+
+```python
+from molguidance.utils.compute_molecule_stability import compute_stability
+
+compute_stability(sdf_file)
+# print out the following stability metrics:
+# - 'rdkit_validity': fraction of molecules passing RDKit sanitization
+# - 'molecule_stability': fraction of molecules where all atoms have valid valencies
+# - 'atom_stability': fraction of atoms with valid valencies
+```
+
 ## Acknowledgements
 
 Molguidance builds upon the source code from the following projects:
@@ -233,4 +253,5 @@ Molguidance builds upon the source code from the following projects:
 * [EDM2](https://github.com/NVlabs/edm2)
 * [Diffusion-wo-CFG](https://github.com/tzco/Diffusion-wo-CFG)
 * [Discrete_Guidance](https://github.com/hnisonoff/discrete_guidance)
+* [geom-drugs-3dgen-evaluation](https://github.com/isayevlab/geom-drugs-3dgen-evaluation)
 

@@ -1,4 +1,5 @@
 import os
+import pickle
 import numpy as np
 import pandas as pd
 from rdkit import Chem, RDLogger
@@ -521,3 +522,34 @@ def get_scaffold_diversity(sdf_files, titles):
     
     df = pd.DataFrame(metrics_data)
     return df
+
+def to_canonical_smiles(mol):
+    try:
+        Chem.SanitizeMol(mol)
+        mol = Chem.RemoveHs(mol)
+        return Chem.MolToSmiles(mol)
+    except Exception:
+        return None
+
+def canonicalize_smiles(smi):
+    try:
+        mol = Chem.MolFromSmiles(smi)
+        if mol is None:
+            return None
+        mol = Chem.RemoveHs(mol)
+        return Chem.MolToSmiles(mol)
+    except Exception:
+        return None
+
+def calculate_novelty(sdf_path, training_pkl_path):
+    generated_sdf = Chem.SDMolSupplier(sdf_path, sanitize=False, removeHs=False)
+    generated_smiles = set(filter(None, [to_canonical_smiles(mol) for mol in generated_sdf if mol is not None]))
+
+    with open(training_pkl_path, 'rb') as f:
+        training_smiles_raw = pickle.load(f)
+    training_smiles = set(filter(None, [canonicalize_smiles(smi) for smi in training_smiles_raw]))
+
+    novel = generated_smiles - training_smiles
+    novelty = len(novel) / len(generated_smiles) if generated_smiles else 0.0
+    print(f"Novelty: {novelty:.3f}  ({len(novel)}/{len(generated_smiles)})")
+    return novelty
