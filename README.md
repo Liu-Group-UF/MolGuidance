@@ -1,7 +1,7 @@
 # MolGuidance
 [![arXiv](https://img.shields.io/badge/arXiv-1234.56789-b31b1b.svg?style=flat)](https://arxiv.org/pdf/2512.12198)
 
-The paper: [*"Molguidance: Advanced Guidance Strategies for Conditional Molecular Generation with Flow Matching"*](https://pubs.acs.org/doi/10.1021/acs.jcim.6c00964). 
+The paper at JCIM: [*"Molguidance: Advanced Guidance Strategies for Conditional Molecular Generation with Flow Matching"*](https://pubs.acs.org/doi/10.1021/acs.jcim.6c00964). 
 
 ![Image](overview_fig.jpg)
 1. This molguidance framework is built on top of our previous work **[PropMolFlow](https://github.com/Liu-Group-UF/PropMolFlow)**.
